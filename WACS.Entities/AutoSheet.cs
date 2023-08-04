@@ -16,7 +16,7 @@ namespace WACS.Entities
             string source = String.Format(@"{0}{1}", Constraints.ROOT_SPREADSHEETS_PATH, folder);
             if (Directory.Exists(source)) 
             {
-                string target = String.Format(@"{0}{1}", Constraints.STORED_SPREADSHEETS_PATH, folder.Split(" - ")[1]);
+                string target = String.Format(@"{0}{1}", Constraints.STORED_SPREADSHEETS_PATH, folder.Split(" ")[1]);
                 CreateDirectory(target); 
                 try  
                 {  
@@ -72,7 +72,7 @@ namespace WACS.Entities
         {
             string month = date.ToString("MMMM", new CultureInfo("pt-BR"));
             month = month.ToUpper();
-            return $"{month} - {date.Year}"; 
+            return $"{month} {date.Year}"; 
         }
 
         private static void CopyFilesRecursively(string sourcePath, string targetPath)

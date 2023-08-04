@@ -14,6 +14,7 @@ IHost builder = Host.CreateDefaultBuilder(args)
             opt.WaitForJobsToComplete = true;
         });
     })
+    .UseWindowsService()
     .Build();
 
 var schedulerFactory = builder.Services.GetRequiredService<ISchedulerFactory>();
@@ -27,7 +28,7 @@ var job = JobBuilder.Create<Job>()
 // Trigger the job to run now, and then every 40 seconds
 // "0 0 8 1-3 * ?"
 var trigger = TriggerBuilder.Create()
-    .WithCronSchedule("0 47 21 1-3 * ?")
+    .WithCronSchedule("0 0 8 1-3 * ?")
     .Build();
 
 await scheduler.ScheduleJob(job, trigger);
