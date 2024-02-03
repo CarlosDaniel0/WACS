@@ -1,67 +1,66 @@
-using System;
-using System.IO;
 using System.Globalization;
 using WACS.Utils;
 using System.Text.RegularExpressions;
+using WACS.Core.SpreadSheets;
 
 namespace WACS.Entities
 {
-    class AutoSheet
+    static class AutoSheet
     {
-        public static void MoveFolderOfLastMonth()
-        {
+        private static void MoveFolderOfLastMonth()
+        { 
             var currentDate = DateTime.Now;
-            var prevDate = currentDate.AddMonths(-2);
+            var prevDate = currentDate.AddMonths(-2); 
             string folder = GetFolder(prevDate);
-            string source = String.Format(@"{0}{1}", Constraints.ROOT_SPREADSHEETS_PATH, folder);
+            string source = string.Format(@"{0}{1}", Constraints.ROOT_SPREADSHEETS_PATH, folder);
             if (Directory.Exists(source)) 
             {
-                string target = String.Format(@"{0}{1}", Constraints.STORED_SPREADSHEETS_PATH, folder.Split(" ")[1]);
+                string target = string.Format(@"{0}{1}", Constraints.STORED_SPREADSHEETS_PATH, folder.Split(" ")[1]);
                 CreateDirectory(target); 
                 try  
                 {  
-                    Directory.Move(source, target + String.Format(@"\{0}", folder));  
+                    Directory.Move(source, target + string.Format(@"\{0}", folder));  
                 }  
                 catch (IOException exp)  
                 {  
-                    Console.WriteLine(exp.Message);  
-                }  
-            }
-        }
-
-        public void CleanSpreadsheets()
-        {
-            if (VerifyExecutions())
-            {                 
-                string prevFolder = GetFolder(DateTime.Now.AddMonths(-1));
-                string newfolder = GetFolder(DateTime.Now);
-                string source = Constraints.ROOT_SPREADSHEETS_PATH + prevFolder;
-
-                if (Directory.Exists(source)) 
-                {
-                    string target = Constraints.ROOT_SPREADSHEETS_PATH + newfolder;
-                    CopyFilesRecursively(source, target);
-                    Tools.CMD(String.Format(@"/C {0} ""{1}""", Constraints.CLI_PATH, target));
-                    Log();
-                    MoveFolderOfLastMonth(); 
+                    Console.WriteLine(exp.Message);
                 }
             }
         }
 
-        public static bool VerifyExecutions()
+        public static void CleanSpreadsheets()
+        {   
+            string prevFolder = GetFolder(DateTime.Now.AddMonths(-1));
+            string newFolder = GetFolder(DateTime.Now);
+            string source = Constraints.ROOT_SPREADSHEETS_PATH + prevFolder;
+            string target = Constraints.ROOT_SPREADSHEETS_PATH + newFolder;
+            if (VerifyExecutions(target))
+            {
+                if (!Directory.Exists(target)) {
+                    CopyFilesRecursively(source, target);     
+                    Executor.Run(target);
+                    Log();
+                }
+                if (Directory.Exists(source))
+                    MoveFolderOfLastMonth();
+            }
+        }
+
+        private static bool VerifyExecutions(string newFolder)
         {
             DateTime today = DateTime.Now; 
-            string log_path = String.Format("{0}{1}", Constraints.LOG_PATH, "execution.txt");
+            string log_path = string.Format("{0}{1}", Constraints.LOG_PATH, "execution.txt");
+            if (Directory.Exists(newFolder)) return false;
             if (File.Exists(log_path))
             {
-                String last = File.ReadLines(log_path).Last();
+                string last = File.ReadLines(log_path).Last();
                 var date_rx = new Regex(@"((\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2}):(\d{2}))");
                 var date_match = date_rx.Match(last);
                 if (date_match.Success)
                 {
                     DateTime lastDate = DateTime.Parse(date_match.Groups[0].Value, new CultureInfo("pt-BR"));
                     TimeSpan diff = today - lastDate;
-                    return diff.TotalDays > 4;
+                    return diff.TotalDays > 4 && today.Day <= 4;
                 }
                 return false;
             }
@@ -101,11 +100,8 @@ namespace WACS.Entities
             string today = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             string message = $"{today} Running Service of Auto Clean Spreadsheets {status}";
             CreateDirectory(Constraints.LOG_PATH);
-            using (StreamWriter sw = new StreamWriter(String.Format("{0}{1}", Constraints.LOG_PATH, "execution.txt"), true))
-            {
-                sw.WriteLine(message);
-            }
-            
+            using var sw = new StreamWriter(string.Format("{0}{1}", Constraints.LOG_PATH, "execution.txt"), true);
+            sw.WriteLine(message); 
         }
     }
 }

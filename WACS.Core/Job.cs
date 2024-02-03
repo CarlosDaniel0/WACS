@@ -6,10 +6,9 @@ namespace WACS.Core
     class Job: IJob
     {
          public async Task Execute(IJobExecutionContext context)
-         { 
-            AutoSheet autoSheet = new AutoSheet();
+         {
             try {
-                autoSheet.CleanSpreadsheets();
+                AutoSheet.CleanSpreadsheets();
             } catch (Exception e) {
                 AutoSheet.Log($"Error - {e.Message}");
             }

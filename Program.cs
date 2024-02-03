@@ -1,4 +1,3 @@
-using WACS;
 using Quartz;
 using WACS.Core;
 
@@ -28,9 +27,10 @@ var job = JobBuilder.Create<Job>()
 // Trigger the job to run now, and then every 40 seconds
 // "0 0 8 1-3 * ?"
 var trigger = TriggerBuilder.Create()
-    .WithCronSchedule("0 0 8 1-3 * ?")
+    .StartNow()
+    // .WithCronSchedule("0 45 19 1-5 * ?")
     .Build();
 
 await scheduler.ScheduleJob(job, trigger);
-
 await builder.RunAsync();
+

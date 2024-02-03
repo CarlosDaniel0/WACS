@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
+    <PackageReference Include="Nager.Holiday" Version="1.0.1" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.3" />
   </ItemGroup>
 </Project>
