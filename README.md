@@ -8,8 +8,13 @@ após o sistema iniciar.
 É necessário possuir o .NET 7 instalado para executar esse projeto
 
 executar
-```
+```bash
 dotnet run .
+```
+
+build
+```bash
+dotnet publish --output .\build -r win-x64 -p:PublishSingleFile=true --self-contained false
 ```
 
 Crie seu Serviço do Windows [aqui](https://learn.microsoft.com/pt-br/dotnet/core/extensions/windows-service)
