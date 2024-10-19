@@ -4,9 +4,15 @@ using WACS.Core;
 IHost builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((ctx, services) =>
     {
-        services.AddQuartz(q => 
+        services.AddQuartz(q =>
         {
-            q.UseMicrosoftDependencyInjectionJobFactory();
+            // q.UseMicrosoftDependencyInjectionJobFactory();
+            q.UseSimpleTypeLoader();
+            q.UseInMemoryStore();
+            q.UseDefaultThreadPool(tp =>
+            {
+                tp.MaxConcurrency = 10;
+            });
         });
         services.AddQuartzHostedService(opt =>
         {
