@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-WACS-33b91322-f60b-44b2-8878-dc7e3226e98a</UserSecretsId>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>   
   </PropertyGroup>
 
   <ItemGroup>

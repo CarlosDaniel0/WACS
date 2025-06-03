@@ -51,7 +51,7 @@ namespace WACS.Entities
             DateTime today = DateTime.Now; 
             string log_path = string.Format("{0}{1}", Constraints.LOG_PATH, "execution.txt");
             if (Directory.Exists(newFolder)) return false;
-            if (File.Exists(log_path))
+            if (File.Exists(log_path) && new FileInfo(log_path).Length != 0)
             {
                 string last = File.ReadLines(log_path).Last();
                 var date_rx = new Regex(@"((\d{2})/(\d{2})/(\d{4}) (\d{2}):(\d{2}):(\d{2}))");
